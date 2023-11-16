@@ -1,14 +1,14 @@
-#define BOOST_TEST_MODULE test_version
-
 #include "lib.h"
+#include <gtest/gtest.h>
 
-#include <boost/test/unit_test.hpp>
-
-BOOST_AUTO_TEST_SUITE(test_version)
-
-BOOST_AUTO_TEST_CASE(test_valid_version)
-{
-    BOOST_CHECK(version() > 0);
+TEST_F(TestSerialization, DateJson) {
+    Date d1(1988, 8, 5);
+    rapidjson::Document json = d1.toJSON();
+    Date d2 = Date::fromJSON(json);
+    ASSERT_EQ(, d2);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+int main(int argc, char** argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
