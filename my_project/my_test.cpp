@@ -24,6 +24,6 @@ TEST(TestTopic, MoreEqualityTests) {
   // ASSERT_* is similar to EXPECT_* but stops the execution
   // of the test if fails.
   // EXPECT_* continues execution on failure too.
-  ASSERT_EQ(GetMeaningOfLife(), 0) << "Oh no, a mistake!";
+  ASSERT_EQ(GetMeaningOfLife(), 42) << "Oh no, a mistake!";
   EXPECT_FLOAT_EQ(23.23F, 23.23F);
 }
