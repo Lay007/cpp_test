@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.10)
 
 #project(helloworld VERSION ${PROJECT_VESRION})
 
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
 project(try_googletest VERSION 0.0.1
                        DESCRIPTION "Try googletest"
                        LANGUAGES CXX)
