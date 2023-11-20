@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 # Init pathch and project versions
-#set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
-#set(PROJECT_VESRION 0.0.${PATCH_VERSION})
+set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
+set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
 #project(helloworld VERSION ${PROJECT_VESRION})
 
@@ -21,8 +21,8 @@ add_subdirectory(external)
 add_subdirectory(my_project)
 
 
-#find_package(GTest REQUIRED)
-#configure_file(version.h.in version.h)
+find_package(GTest REQUIRED)
+configure_file(version.h.in version.h)
 
 #add_executable(helloworld_cli main.cpp)
 #add_library(helloworld lib.cpp)
@@ -49,31 +49,30 @@ add_subdirectory(my_project)
 #    helloworld
 #)
 
+
 #if (MSVC)
- #   target_compile_options(helloworld_cli PRIVATE
- #       /W4
- #   )
- 
+#    target_compile_options(helloworld_cli PRIVATE
+#        /W4
+#    ) 
 #else ()
- #   target_compile_options(helloworld_cli PRIVATE
- #       -Wall -Wextra -pedantic -Werror
- #   )
- 
+#    target_compile_options(helloworld_cli PRIVATE
+#        -Wall -Wextra -pedantic -Werror
+#    )
 #endif()
 
 
 
 #install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
 
-#set(CPACK_GENERATOR DEB)
+set(CPACK_GENERATOR DEB)
 
-#set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
-#set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
-#set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 
-#set(CPACK_PACKAGE_CONTACT example@example.com)
+set(CPACK_PACKAGE_CONTACT example@example.com)
 
-#include(CPack)
+include(CPack)
 
 #enable_testing()
 
