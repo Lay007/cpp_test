@@ -18,11 +18,11 @@ include(cmake/UpdateSubmodules.cmake)
 # Add subdirectories with code
 include(CTest)
 add_subdirectory(external)
-add_subdirectory(external/googletest/googletest)
+#add_subdirectory(external/googletest/googletest)
 add_subdirectory(my_project)
 
 enable_testing()
-find_package(GTest REQUIRED)
+#find_package(GTest REQUIRED)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 configure_file(version.h.in version.h)
