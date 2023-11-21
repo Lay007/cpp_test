@@ -23,7 +23,7 @@ add_subdirectory(my_project)
 
 enable_testing()
 find_package(GTest REQUIRED)
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR}
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 configure_file(version.h.in version.h)
 
