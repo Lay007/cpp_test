@@ -18,7 +18,7 @@ include(cmake/UpdateSubmodules.cmake)
 # Add subdirectories with code
 include(CTest)
 add_subdirectory(external)
-add_subdirectory(external/googletest)
+add_subdirectory(external/googletest/googletest)
 add_subdirectory(my_project)
 
 enable_testing()
