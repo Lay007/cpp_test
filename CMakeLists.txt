@@ -21,7 +21,7 @@ add_subdirectory(external)
 #add_subdirectory(external/googletest/googletest)
 add_subdirectory(my_project)
 
-enable_testing()
+#enable_testing()
 #find_package(GTest REQUIRED)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
