@@ -1,6 +1,6 @@
-﻿# cpp_test: C++ DSP Showcase
+﻿# cpp-dsp-showcase: C++ DSP Showcase
 
-`cpp_test` is a focused DSP portfolio repository:
+`cpp-dsp-showcase` is a focused DSP portfolio repository:
 - non-trivial signal processing primitives in modern C++;
 - reproducible testing with `CMake + CTest + GoogleTest`;
 - CI on Linux and Windows with performance checks.
