@@ -1,5 +1,4 @@
-build/*
-.vscode/launch.json
-external/googletest/*
-.vs/*
-out/*
+build/
+out/
+.vs/
+.vscode/
