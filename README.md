@@ -23,7 +23,7 @@ It is especially relevant for:
 - C++ DSP development portfolios;
 - interview and technical review discussions;
 - experimentation with classic signal-processing primitives;
-- future expansion toward more advanced SDR/audio/radar-oriented blocks.
+- future expansion toward more advanced SDR, audio, radar, and measurement-oriented blocks.
 
 ## Implemented DSP blocks
 
@@ -60,6 +60,36 @@ ctest --test-dir build -C Release -L perf --output-on-failure
 cmake --build build --config Release --target benchmark_report
 ```
 
+## Run the demo
+
+```bash
+cmake --build build --config Release --target my_project_demo
+./build/my_project/my_project_demo
+```
+
+### Example demo output
+
+```text
+Input RMS: 0.707107
+Filtered RMS: 0.686289
+Passband |H(f)|: 1.000117
+Stopband |H(f)|: 8.3203e-07
+Resampled size (3/2): 3072
+Demo complete.
+```
+
+## Example benchmark snapshot
+
+The repository already includes a local performance snapshot in [docs/perf_report.md](docs/perf_report.md):
+
+| Benchmark | Samples | Avg time (ms) | Throughput (MSa/s) |
+|---|---:|---:|---:|
+| FIR 127-tap convolution | 32768 | 2.794 | 11.727 |
+| Goertzel power detector | 8192 | 0.044 | 184.380 |
+| GCC-PHAT delay estimate | 1024 | 179.096 | 0.006 |
+
+These values are hardware-, compiler-, and configuration-dependent, but they make the project immediately more useful for discussing optimization priorities.
+
 ## CI
 
 Workflow file:
@@ -89,9 +119,9 @@ Workflow file:
 
 ## Performance notes
 
-The repository already includes a local performance snapshot in [docs/perf_report.md](docs/perf_report.md). That makes it easier to treat performance as an engineering concern rather than an afterthought.
-
 A notable current optimization target is the GCC-PHAT path, where the implementation currently uses a naive DFT-based approach. This is useful because it keeps the algorithm readable while leaving clear room for future FFT-based acceleration.
+
+In other words, the repository is already strong as a correctness-first showcase, while still exposing realistic performance engineering opportunities.
 
 ## Roadmap
 
@@ -104,6 +134,16 @@ See [docs/dsp_tasks.md](docs/dsp_tasks.md) for the advanced backlog. Current dir
 - beamforming;
 - fixed-point DSP kernels;
 - performance hardening and SIMD-oriented optimization.
+
+## Future improvements
+
+Potential next steps for turning this repository into an even stronger engineering showcase:
+
+- replace naive DFT paths with FFT-based implementations;
+- add SIMD-accelerated kernels for selected hot loops;
+- introduce fixed-point variants for embedded-oriented DSP paths;
+- add richer benchmark comparisons across toolchains and platforms;
+- include small visual result artifacts such as impulse-response or frequency-response plots.
 
 ## License
 
