@@ -5,25 +5,28 @@
 [![Tests](https://github.com/Lay007/cpp-dsp-showcase/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/Lay007/cpp-dsp-showcase/actions/workflows/cmake-multi-platform.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A compact but serious **C++ DSP showcase** repository focused on practical signal-processing kernels, reproducible verification, and cross-platform engineering discipline.
+A compact but serious **C++ DSP showcase** focused on practical signal-processing kernels, reproducible verification, and cross-platform engineering discipline.
 
-This project is meant to demonstrate more than just isolated DSP functions. It shows how core algorithms can be packaged as a small modern C++ codebase with:
+This repository is built to demonstrate more than isolated DSP formulas. It shows how classic signal-processing blocks can be packaged into a modern C++ project with clean builds, automated testing, CI, and benchmark reporting.
 
-- clean CMake-based builds;
-- automated unit, smoke, and performance tests;
-- Linux and Windows CI;
-- benchmark reporting and an extensible roadmap for deeper DSP work.
+## Highlights
+
+- modern **C++17** codebase
+- **CMake + CTest + GoogleTest** workflow
+- CI on **Linux** and **Windows**
+- correctness-first implementation with clear optimization headroom
+- benchmark reporting for performance-oriented iteration
 
 ## Why this repository matters
 
-Many DSP repositories stop at formulas or quick prototypes. `cpp-dsp-showcase` is intentionally positioned as a **portfolio-grade engineering sample**: small enough to inspect quickly, but substantial enough to demonstrate algorithm design, code organization, testability, and performance awareness.
+Many DSP repositories stop at notebook-level prototypes or disconnected code snippets. `cpp-dsp-showcase` is intentionally positioned as a **portfolio-grade engineering sample**: small enough to review quickly, but substantial enough to demonstrate algorithm design, code organization, verification strategy, and performance awareness.
 
-It is especially relevant for:
+It is especially useful for:
 
-- C++ DSP development portfolios;
-- interview and technical review discussions;
-- experimentation with classic signal-processing primitives;
-- future expansion toward more advanced SDR, audio, radar, and measurement-oriented blocks.
+- C++ DSP portfolio presentation
+- interview and technical discussion material
+- experimentation with classic DSP primitives
+- future expansion toward SDR, audio, radar, and measurement-oriented workflows
 
 ## Implemented DSP blocks
 
@@ -45,10 +48,10 @@ It is especially relevant for:
 
 The repository is structured to validate both correctness and practical usability:
 
-- unit tests are auto-discovered via `gtest_discover_tests`;
-- a smoke test exercises the demo executable;
-- a dedicated performance suite is exposed through `ctest -L perf`;
-- a benchmark target generates a Markdown performance report in `build/reports/dsp_performance.md`.
+- unit tests are auto-discovered via `gtest_discover_tests`
+- a smoke test exercises the demo executable
+- a dedicated performance suite is exposed through `ctest -L perf`
+- a benchmark target generates a Markdown report at `build/reports/dsp_performance.md`
 
 ## Quick start
 
@@ -67,20 +70,11 @@ cmake --build build --config Release --target my_project_demo
 ./build/my_project/my_project_demo
 ```
 
-### Example demo output
+The demo prints key runtime indicators such as input RMS, filtered RMS, passband magnitude, stopband magnitude, and resampled signal length.
 
-```text
-Input RMS: 0.707107
-Filtered RMS: 0.686289
-Passband |H(f)|: 1.000117
-Stopband |H(f)|: 8.3203e-07
-Resampled size (3/2): 3072
-Demo complete.
-```
+## Benchmark snapshot
 
-## Example benchmark snapshot
-
-The repository already includes a local performance snapshot in [docs/perf_report.md](docs/perf_report.md):
+A local performance snapshot is available in [docs/perf_report.md](docs/perf_report.md):
 
 | Benchmark | Samples | Avg time (ms) | Throughput (MSa/s) |
 |---|---:|---:|---:|
@@ -88,7 +82,7 @@ The repository already includes a local performance snapshot in [docs/perf_repor
 | Goertzel power detector | 8192 | 0.044 | 184.380 |
 | GCC-PHAT delay estimate | 1024 | 179.096 | 0.006 |
 
-These values are hardware-, compiler-, and configuration-dependent, but they make the project immediately more useful for discussing optimization priorities.
+These values are hardware-, compiler-, and configuration-dependent, but they make the repository immediately more useful for discussing optimization priorities.
 
 ## CI
 
@@ -103,10 +97,10 @@ Workflow file:
 
 ### CI responsibilities
 
-- configure and build the project;
-- run the full automated test suite;
-- run performance-labeled tests;
-- generate and upload the benchmark report artifact.
+- configure and build the project
+- run the full automated test suite
+- run performance-labeled tests
+- generate and upload the benchmark report artifact
 
 ## Repository layout
 
@@ -115,35 +109,35 @@ Workflow file:
 - `my_project/tests/` — unit tests
 - `my_project/bench/` — performance benchmark executable
 - `docs/dsp_tasks.md` — advanced DSP backlog
-- `docs/perf_report.md` — latest local performance snapshot
+- `docs/perf_report.md` — local performance snapshot
 
 ## Performance notes
 
-A notable current optimization target is the GCC-PHAT path, where the implementation currently uses a naive DFT-based approach. This is useful because it keeps the algorithm readable while leaving clear room for future FFT-based acceleration.
+A notable current optimization target is the GCC-PHAT path, where the implementation currently uses a naive DFT-based approach. That keeps the algorithm readable while leaving clear room for future FFT-based acceleration.
 
-In other words, the repository is already strong as a correctness-first showcase, while still exposing realistic performance engineering opportunities.
+In other words, the repository is already strong as a correctness-first showcase while still exposing realistic performance engineering opportunities.
 
 ## Roadmap
 
 See [docs/dsp_tasks.md](docs/dsp_tasks.md) for the advanced backlog. Current directions include:
 
-- sub-sample TDOA;
-- adaptive filters (`LMS`, `NLMS`, `RLS`);
-- polyphase channelizer;
-- OFDM synchronization;
-- beamforming;
-- fixed-point DSP kernels;
-- performance hardening and SIMD-oriented optimization.
+- sub-sample TDOA
+- adaptive filters (`LMS`, `NLMS`, `RLS`)
+- polyphase channelizer
+- OFDM synchronization
+- beamforming
+- fixed-point DSP kernels
+- SIMD-oriented optimization and performance hardening
 
 ## Future improvements
 
-Potential next steps for turning this repository into an even stronger engineering showcase:
+Potential next steps for making the repository even stronger:
 
-- replace naive DFT paths with FFT-based implementations;
-- add SIMD-accelerated kernels for selected hot loops;
-- introduce fixed-point variants for embedded-oriented DSP paths;
-- add richer benchmark comparisons across toolchains and platforms;
-- include small visual result artifacts such as impulse-response or frequency-response plots.
+- replace naive DFT paths with FFT-based implementations
+- add SIMD-accelerated kernels for selected hot loops
+- introduce fixed-point variants for embedded-oriented DSP paths
+- add richer benchmark comparisons across platforms and toolchains
+- include small visual artifacts such as impulse-response or frequency-response plots
 
 ## License
 
