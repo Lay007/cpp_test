@@ -105,11 +105,6 @@ See [docs/dsp_tasks.md](docs/dsp_tasks.md) for the advanced backlog. Current dir
 - fixed-point DSP kernels;
 - performance hardening and SIMD-oriented optimization.
 
-## Notes
-
-- The repository name is **`cpp-dsp-showcase`**, while the current top-level CMake project identifier is still `cpp_test` for historical reasons.
-- This does not prevent building or testing, but renaming the internal CMake project in a later cleanup pass would improve consistency.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
