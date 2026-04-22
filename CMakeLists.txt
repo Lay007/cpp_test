@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(PATCH_VERSION "1" CACHE STRING "Patch version")
-project(cpp_test VERSION 0.3.${PATCH_VERSION}
+project(cpp_dsp_showcase VERSION 0.3.${PATCH_VERSION}
                  DESCRIPTION "C++ DSP showcase with CMake, CTest and CI"
                  LANGUAGES CXX)
 
