@@ -1,37 +1,56 @@
-# cpp-dsp-showcase: C++ DSP Showcase
+# cpp-dsp-showcase
 
-`cpp-dsp-showcase` is a focused DSP portfolio repository built around modern C++, reproducible testing, and practical signal-processing building blocks.
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue)](#)
+[![CMake](https://img.shields.io/badge/build-CMake-informational)](#)
+[![Tests](https://github.com/Lay007/cpp-dsp-showcase/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/Lay007/cpp-dsp-showcase/actions/workflows/cmake-multi-platform.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-It is designed as a compact but serious showcase of:
+A compact but serious **C++ DSP showcase** repository focused on practical signal-processing kernels, reproducible verification, and cross-platform engineering discipline.
 
-- non-trivial signal processing primitives in modern C++;
-- reproducible testing with `CMake + CTest + GoogleTest`;
-- CI on Linux and Windows with performance checks.
+This project is meant to demonstrate more than just isolated DSP functions. It shows how core algorithms can be packaged as a small modern C++ codebase with:
 
-## Implemented DSP Blocks
+- clean CMake-based builds;
+- automated unit, smoke, and performance tests;
+- Linux and Windows CI;
+- benchmark reporting and an extensible roadmap for deeper DSP work.
 
-### Source
+## Why this repository matters
+
+Many DSP repositories stop at formulas or quick prototypes. `cpp-dsp-showcase` is intentionally positioned as a **portfolio-grade engineering sample**: small enough to inspect quickly, but substantial enough to demonstrate algorithm design, code organization, testability, and performance awareness.
+
+It is especially relevant for:
+
+- C++ DSP development portfolios;
+- interview and technical review discussions;
+- experimentation with classic signal-processing primitives;
+- future expansion toward more advanced SDR/audio/radar-oriented blocks.
+
+## Implemented DSP blocks
+
+### Core source files
 
 - `my_project/include/my_project/dsp.hpp`
 - `my_project/src/dsp.cpp`
 
-### Algorithms
+### Available algorithms and helpers
 
-- Windowed-sinc FIR low-pass design (Blackman window, DC normalization)
-- Time-domain convolution
-- Goertzel tone power detector
-- GCC-PHAT delay estimation
-- Rational resampler `L/M` (upsample-filter-decimate)
-- Utility helpers for tone generation, RMS, and frequency response
+- **Windowed-sinc FIR low-pass design** using a Blackman window and DC normalization
+- **Time-domain convolution**
+- **Goertzel tone power detector**
+- **GCC-PHAT delay estimation**
+- **Rational resampler `L/M`** using upsample-filter-decimate flow
+- **Utility helpers** for tone generation, RMS, and frequency-response inspection
 
-## Test and Performance Setup
+## Verification and performance workflow
 
-- Unit tests are auto-discovered via `gtest_discover_tests`
-- Smoke run for the DSP demo executable
-- Performance suite available via `ctest -L perf`
-- Benchmark report target writes a Markdown report to `build/reports/dsp_performance.md`
+The repository is structured to validate both correctness and practical usability:
 
-## Quick Start
+- unit tests are auto-discovered via `gtest_discover_tests`;
+- a smoke test exercises the demo executable;
+- a dedicated performance suite is exposed through `ctest -L perf`;
+- a benchmark target generates a Markdown performance report in `build/reports/dsp_performance.md`.
+
+## Quick start
 
 ```bash
 cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
@@ -47,19 +66,19 @@ Workflow file:
 
 - `.github/workflows/cmake-multi-platform.yml`
 
-### Matrix
+### CI matrix
 
 - `ubuntu-latest`
 - `windows-latest`
 
-### CI Steps
+### CI responsibilities
 
-- configure and build;
-- run all tests;
-- run performance-labeled tests (`ctest -L perf`);
+- configure and build the project;
+- run the full automated test suite;
+- run performance-labeled tests;
 - generate and upload the benchmark report artifact.
 
-## Repository Layout
+## Repository layout
 
 - `my_project/include/my_project/dsp.hpp` — public DSP API
 - `my_project/src/` — implementations and demo executable
@@ -68,15 +87,28 @@ Workflow file:
 - `docs/dsp_tasks.md` — advanced DSP backlog
 - `docs/perf_report.md` — latest local performance snapshot
 
-## Advanced DSP Backlog
+## Performance notes
 
-See [docs/dsp_tasks.md](docs/dsp_tasks.md) for the non-trivial roadmap, including:
+The repository already includes a local performance snapshot in [docs/perf_report.md](docs/perf_report.md). That makes it easier to treat performance as an engineering concern rather than an afterthought.
+
+A notable current optimization target is the GCC-PHAT path, where the implementation currently uses a naive DFT-based approach. This is useful because it keeps the algorithm readable while leaving clear room for future FFT-based acceleration.
+
+## Roadmap
+
+See [docs/dsp_tasks.md](docs/dsp_tasks.md) for the advanced backlog. Current directions include:
 
 - sub-sample TDOA;
 - adaptive filters (`LMS`, `NLMS`, `RLS`);
 - polyphase channelizer;
 - OFDM synchronization;
-- beamforming and fixed-point path.
+- beamforming;
+- fixed-point DSP kernels;
+- performance hardening and SIMD-oriented optimization.
+
+## Notes
+
+- The repository name is **`cpp-dsp-showcase`**, while the current top-level CMake project identifier is still `cpp_test` for historical reasons.
+- This does not prevent building or testing, but renaming the internal CMake project in a later cleanup pass would improve consistency.
 
 ## License
 
