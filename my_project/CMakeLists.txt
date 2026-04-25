@@ -1,3 +1,5 @@
+option(DSP_ENABLE_AVX2 "Enable AVX2 SIMD kernels where available" OFF)
+
 add_library(my_project_dsp STATIC
     src/dsp.cpp
 )
@@ -14,11 +16,23 @@ else()
     target_compile_options(my_project_dsp PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
+if(DSP_ENABLE_AVX2)
+    target_compile_definitions(my_project_dsp PRIVATE MY_PROJECT_DSP_ENABLE_AVX2=1)
+    if(MSVC)
+        target_compile_options(my_project_dsp PRIVATE /arch:AVX2)
+    else()
+        target_compile_options(my_project_dsp PRIVATE -mavx2 -mfma)
+    endif()
+endif()
+
 add_executable(my_project_demo src/dsp_demo.cpp)
 target_link_libraries(my_project_demo PRIVATE my_project_dsp)
 
 add_executable(my_project_dsp_benchmark bench/dsp_benchmark.cpp)
 target_link_libraries(my_project_dsp_benchmark PRIVATE my_project_dsp)
+
+add_executable(iq_analysis_demo src/iq_analysis_demo.cpp)
+target_link_libraries(iq_analysis_demo PRIVATE my_project_dsp)
 
 set(DSP_BENCHMARK_REPORT "${CMAKE_BINARY_DIR}/reports/dsp_performance.md")
 add_custom_target(benchmark_report
