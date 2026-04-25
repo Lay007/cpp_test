@@ -5,76 +5,121 @@
 [![Tests](https://github.com/Lay007/cpp-dsp-showcase/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/Lay007/cpp-dsp-showcase/actions/workflows/cmake-multi-platform.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A compact but serious **C++ DSP showcase** focused on practical signal-processing kernels, reproducible verification, and cross-platform engineering discipline.
-
 ---
 
-## 🎓 Part of SDR course ecosystem
+## 🚀 DSP engineering showcase + SDR course backend
 
-This repository is integrated with:
+This repository is not just a collection of DSP algorithms.
+
+It is a **complete engineering pipeline**:
+
+```text
+Signal → SDR → IQ → C++ DSP → analysis → benchmark → FPGA candidate
+```
+
+It is tightly integrated with:
 
 👉 https://github.com/Lay007/zynq-sdr-course
 
-It acts as a **C++ DSP backend layer** bridging:
+---
 
-- theory (DSP fundamentals)
-- modeling (MATLAB / Simulink)
-- software (C++)
-- hardware (FPGA / SDR)
+## 🧠 What this project demonstrates
 
-Detailed integration: `docs/course_bridge.md`
+- DSP fundamentals in real code
+- algorithm trade-offs and complexity
+- reproducible testing
+- performance awareness
+- SDR signal processing workflow
+- FPGA-ready thinking
 
 ---
 
-## DSP modules overview
+## 📚 Lab track (core of the project)
+
+👉 See full list: `docs/labs/README.md`
+
+| Lab | Topic |
+|---|---|
+| Lab 01 | IQ → C++ analysis |
+| Lab 02 | FFT vs Goertzel |
+| Lab 03 | GCC-PHAT |
+| Lab 04 | FIR (time vs FFT) |
+| Lab 05 | Resampling (polyphase) |
+| Lab 06 | Real SDR signal |
+
+---
+
+## 🧩 DSP modules
 
 ![DSP flow](docs/assets/dsp_modules_flow.svg)
 
 ---
 
-## Visual validation artifacts
+## 📊 Visual DSP artifacts
 
-### FIR frequency response
-
-![FIR](docs/assets/fir_response.png)
-
-### Goertzel tone detection
-
-![Goertzel](docs/assets/goertzel_detection.png)
-
-### GCC-PHAT delay estimation
-
-![GCC](docs/assets/gcc_phat_delay.png)
+| FIR | Goertzel | GCC |
+|-----|----------|-----|
+| ![](docs/assets/fir_response.png) | ![](docs/assets/goertzel_detection.png) | ![](docs/assets/gcc_phat_delay.png) |
 
 ---
 
-## Algorithm engineering table
+## ⚙️ Engineering decisions
 
-| Algorithm | Validation | Complexity | Optimization target |
-|---|---|---|---|
-| FIR (windowed-sinc) | unit tests + freq response | O(N·M) | SIMD / FFT convolution |
-| Convolution | impulse + RMS checks | O(N·M) | overlap-save FFT |
-| Goertzel | tone detection tests | O(N) | vectorization |
-| GCC-PHAT | delay accuracy tests | O(N²) (DFT) | FFT-based cross-spectrum |
-| Resampler L/M | length + spectral checks | O(N·M) | polyphase filters |
-
----
-
-## Engineering decisions
-
-This repository intentionally prioritizes **clarity and correctness over premature optimization**.
-
----
-
-## Highlights
-
-- modern **C++17** codebase
-- **CMake + CTest + GoogleTest** workflow
-- CI on **Linux** and **Windows**
 - correctness-first implementation
+- readable DSP kernels
+- naive baselines → optimization roadmap
+- explicit trade-offs instead of hidden complexity
 
 ---
 
-## License
+## 📈 Algorithm overview
+
+| Algorithm | Complexity | Target optimization |
+|---|---|---|
+| FIR | O(N·M) | SIMD / FFT |
+| Goertzel | O(N) | vectorization |
+| GCC-PHAT | O(N²) → O(N log N) | FFT |
+| Resampler | O(N·M) | polyphase |
+
+---
+
+## 🚀 Quick start
+
+```bash
+cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
+ctest --test-dir build --output-on-failure
+```
+
+---
+
+## 🧪 Generate DSP visuals
+
+```bash
+pip install numpy matplotlib
+python tools/generate_dsp_plots.py
+```
+
+---
+
+## 📡 SDR workflow example
+
+```bash
+python tools/generate_lab06_ci16_tone.py
+./build/my_project/iq_analysis_demo data/lab06_simulated_ci16.iq 1024000 100000
+```
+
+---
+
+## 🧭 Engineering roadmap
+
+- SIMD / AVX optimization
+- FFT-based acceleration
+- real SDR streaming
+- FPGA mapping (Zynq)
+
+---
+
+## 📄 License
 
 MIT
