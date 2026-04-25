@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <vector>
 
-namespace my_project::dsp {
+namespace dsp_core::dsp {
 
 using Signal = std::vector<double>;
 
@@ -42,4 +42,4 @@ Signal resample_rational(const Signal& input,
                          int filter_taps = 127,
                          double cutoff_scale = 0.95);
 
-}  // namespace my_project::dsp
+}  // namespace dsp_core::dsp

@@ -93,7 +93,7 @@ python tools/generate_lab06_ci16_tone.py
 
 cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
-./build/my_project/iq_analysis_demo data/lab06_simulated_ci16.iq 1024000 100000
+./build/dsp_core/iq_analysis_demo data/lab06_simulated_ci16.iq 1024000 100000
 ```
 
 Expected output includes:

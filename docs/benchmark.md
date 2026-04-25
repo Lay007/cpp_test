@@ -1,86 +1,71 @@
-# DSP Benchmark Dashboard
+# Benchmark Guide
 
-This document summarizes performance characteristics of the main DSP kernels.
+This project ships with a small benchmark executable so that algorithm changes can be evaluated with reproducible numbers instead of assumptions.
 
----
+## Run the benchmark
 
-## 🧠 Methodology
-
-Benchmarks are executed using the built-in tool:
+Generate the markdown report from CMake:
 
 ```bash
-cmake --build build --target benchmark_report
+cmake --build build --config Release --target benchmark_report
 ```
 
-or manually:
+Run the benchmark executable directly:
 
 ```bash
-./build/my_project_dsp_benchmark --iterations 20 --report build/reports/dsp.md
+./build/dsp_core/dsp_core_benchmark --iterations 20 --report build/reports/dsp_performance.md
 ```
 
----
+The report is written as a markdown table to make it easy to review in CI artifacts or commit into documentation when needed.
 
-## 📊 Visual overview
+## What is measured
 
-![Benchmark](assets/benchmark_dashboard.svg)
+The current benchmark compares representative kernels:
 
----
+- direct FIR convolution
+- FFT overlap-save convolution
+- scalar Goertzel evaluation
+- batched Goertzel evaluation
 
-## ⚙️ Performance comparison
+These measurements are intended as engineering guidance, not as a vendor-grade microbenchmark suite.
 
-| Kernel | Scalar | SIMD (AVX2) | FFT / Advanced |
-|--------|--------|------------|----------------|
-| FIR (short) | 1x | 5–10x | — |
-| FIR (long) | 1x | 4–8x | 10–30x |
-| Goertzel | 1x | 2–4x | — |
-| RMS | 1x | 4–8x | — |
-| GCC-PHAT | 1x | — | 5–15x |
+## Reading the results
 
----
+The generated table includes:
 
-## 📈 Typical results (example)
+- average execution time in milliseconds
+- relative speedup against the direct FIR baseline
+
+Representative example:
 
 | Method | Time (ms) | Speedup |
-|--------|----------|--------|
-| FIR SIMD | 18 | 1x |
-| FIR FFT | 9 | 2x |
-| Goertzel scalar | 80 | 1x |
-| Goertzel SIMD | 22 | 3.6x |
+|---|---:|---:|
+| FIR direct | 2.693 | 1.00x |
+| FIR overlap-save FFT | 1.816 | 1.48x |
+| Goertzel scalar | 0.130 | 20.72x |
+| Goertzel batched | 0.485 | 5.55x |
 
----
-
-## 🧭 Engineering takeaway
-
-- SIMD improves constant factors
-- FFT improves asymptotic complexity
-- optimal method depends on problem size
+The interpretation matters more than the raw numbers:
 
 ```text
-small problem → SIMD
-large problem → FFT
-real-time → FPGA
+short filters -> direct FIR can stay competitive
+longer filters -> FFT methods become more attractive
+single tone -> scalar Goertzel is simple and efficient
+multiple tones -> batching can simplify multi-target analysis
 ```
 
----
+## Caveats
 
-## 📡 SDR context
+Benchmark numbers depend on:
 
-In SDR pipelines:
+- compiler and flags
+- CPU microarchitecture
+- memory subsystem behavior
+- selected iteration count
+- signal size and filter length
 
-- FIR → channel filtering
-- Goertzel → tone detection
-- FFT → spectrum / wideband analysis
-- GCC-PHAT → synchronization
+Always compare runs on the same hardware and toolchain before drawing conclusions.
 
----
+## Visual summary
 
-## ⚠️ Notes
-
-Performance depends on:
-
-- CPU architecture
-- compiler flags
-- memory bandwidth
-- signal length
-
-Always benchmark on target hardware.
+![Benchmark dashboard](assets/benchmark_dashboard.svg)

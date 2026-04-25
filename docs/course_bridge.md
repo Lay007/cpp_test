@@ -1,91 +1,40 @@
-# Course bridge: cpp-dsp-showcase ↔ zynq-sdr-course
+# Course Bridge
 
-`cpp-dsp-showcase` can be used as the **C++ DSP backend track** for the Zynq SDR course:
+`cpp-dsp-showcase` can act as the C++ implementation track for the companion SDR course:
 
 - course repository: <https://github.com/Lay007/zynq-sdr-course>
-- C++ DSP backend: <https://github.com/Lay007/cpp-dsp-showcase>
+- C++ DSP reference: <https://github.com/Lay007/cpp-dsp-showcase>
 
-## Role in the course
+## Role in the learning flow
 
-The course explains DSP concepts from theory to SDR hardware. This repository provides a compact implementation layer where students can:
+The course explains the theory and SDR context.
+This repository provides the engineering layer where students can:
 
-1. inspect reference C++ DSP kernels;
-2. run deterministic tests;
-3. generate visual validation artifacts;
-4. benchmark performance;
-5. compare floating-point C++ with MATLAB/Simulink and future FPGA-oriented implementations.
+1. inspect DSP kernels in readable C++
+2. validate behavior with deterministic tests
+3. generate plots and benchmark reports
+4. compare desktop implementations with future FPGA candidates
 
-## Suggested learning path
+## Suggested progression
 
-| Course stage | Course topic | cpp-dsp-showcase activity |
+| Stage | Focus | Activity in this repository |
 |---|---|---|
-| 1 | DSP tooling overview | build project, run tests, inspect reports |
-| 2 | Signals and spectra | generate tones, RMS, frequency response |
-| 3 | FIR filtering | design and validate windowed-sinc FIR |
-| 4 | Tone detection | run Goertzel detector and plot detection curve |
-| 5 | Delay estimation | study GCC-PHAT and benchmark current DFT baseline |
-| 6 | Resampling | analyze L/M resampler flow |
-| 7 | SDR capture | process recorded IQ files from HDSDR / rtl-sdr |
-| 8 | Hardware path | compare C++ baseline with Simulink and FPGA candidates |
+| 1 | Build environment | configure, build, run tests |
+| 2 | Signals and spectra | generate tones, inspect RMS and response |
+| 3 | FIR filtering | design and validate a low-pass filter |
+| 4 | Tone detection | analyze single-tone detection with Goertzel |
+| 5 | Delay estimation | study GCC-PHAT behavior and limits |
+| 6 | Resampling | inspect `L/M` sample-rate conversion |
+| 7 | SDR recordings | process IQ captures with the CI16 demo |
+| 8 | Hardware migration | compare software baseline against hardware-oriented implementations |
 
-## Lab idea: from model to C++ backend
+## Core message
 
-### Goal
-
-Take a simple course signal-processing experiment and reproduce it in C++.
-
-### Example flow
-
-1. Generate or record a tone signal.
-2. Analyze it in MATLAB / Simulink / GNU Radio.
-3. Run equivalent C++ DSP code from this repository.
-4. Compare numerical results and plots.
-5. Discuss implementation trade-offs.
-
-## Lab idea: rtl-sdr / HDSDR recording to C++ analysis
-
-### Input
-
-A recorded IQ file from HDSDR or another SDR tool.
-
-### Processing path
+The value of the repository is not only that the algorithms run.
+The value is that each algorithm has a visible engineering path:
 
 ```text
-rtl-sdr / HDSDR recording
-        ↓
-IQ file
-        ↓
-C++ reader / converter
-        ↓
-FIR filtering / tone detection / delay estimation
-        ↓
-plots + benchmark report
+theory -> reference implementation -> tests -> benchmark -> hardware candidate
 ```
 
-### Learning outcome
-
-Students see the bridge between:
-
-- real RF capture;
-- desktop DSP analysis;
-- production-style C++ implementation;
-- future FPGA acceleration.
-
-## Recommended future additions
-
-- `examples/iq_file_analysis.cpp`
-- `docs/iq_file_format.md`
-- `tools/convert_ci16_to_float.py`
-- benchmark comparison: Python / MATLAB / C++ / FPGA
-- fixed-point version of selected kernels
-- Vivado / Vitis HLS candidate mapping notes
-
-## Engineering message
-
-The important point is not only that the algorithms work. The important point is that each algorithm has a visible path:
-
-```text
-Theory → MATLAB/Simulink model → C++ reference → tests → benchmark → FPGA candidate
-```
-
-That makes this repository a practical companion to the SDR course rather than just a standalone code sample.
+That makes the project a practical bridge between DSP education and real implementation work.

@@ -1,53 +1,66 @@
-# Engineering deep-dive
+# Engineering Notes
 
-## Architecture principles
+## Architecture
 
-The project follows a **layered DSP architecture**:
+The project follows a simple layered layout:
 
-1. Signal generation / input
+1. Signal generation or input
 2. Core DSP kernels
-3. Validation layer
+3. Validation through deterministic tests
 4. Benchmarking and reporting
+5. Documentation and visual artifacts
 
-## Performance model
+That separation keeps the reference implementation easy to audit while still leaving room for optimization work.
 
-| Algorithm | Current impl | Complexity | Bottleneck |
-|----------|-------------|------------|------------|
-| FIR | time-domain | O(N·M) | memory + MAC |
-| Goertzel | direct | O(N) | scalar loop |
-| GCC-PHAT | naive DFT | O(N²) | transform cost |
-| Resampler | naive | O(N·M) | filtering |
+## Current complexity profile
 
-## Optimization roadmap
+| Algorithm | Current implementation | Typical complexity | Main bottleneck |
+|---|---|---|---|
+| FIR convolution | direct time-domain | `O(N * M)` | multiply-accumulate throughput |
+| FIR convolution (alt) | FFT overlap-save | `O(N log N)` blocks | transform overhead vs filter length |
+| Goertzel | direct recurrence | `O(N)` per target | scalar recurrence |
+| GCC-PHAT | FFT-based correlation flow | `O(N log N)` | transform cost |
+| Rational resampler | upsample + FIR + decimate | `O(N * M)` | filtering cost |
 
-### Phase 1 (low risk)
-- loop unrolling
-- memory alignment
-- cache locality improvements
+## Optimization strategy
 
-### Phase 2 (medium)
-- SIMD (AVX2 / AVX-512 / NEON)
-- fused multiply-add usage
+### Phase 1: low risk
 
-### Phase 3 (high impact)
-- FFT-based convolution
-- FFT-based GCC-PHAT
+- tighten input validation and error handling
+- reduce avoidable allocations
+- improve cache locality in hot loops
+- keep scalar reference paths easy to verify
+
+### Phase 2: medium risk
+
+- optional AVX2/FMA acceleration
+- batched frequency analysis
+- target-specific compiler tuning
+
+### Phase 3: high impact
+
+- more aggressive FFT planning choices
 - polyphase resampling
+- streaming SDR pipeline integration
+- fixed-point and FPGA-oriented variants
 
-## SDR integration direction
+## Why the code stays readable
 
-Future evolution:
+This repository is meant to be inspected and taught from.
+That means correctness, testability, and traceability are more important than chasing every last percent of performance in the baseline path.
 
-- rtl-sdr input
-- IQ file processing (int16 complex)
-- real-time pipeline
+The optimization rule is:
 
-## Why not optimized yet?
+```text
+measure first -> optimize the bottleneck -> verify again
+```
 
-Because:
+## Engineering direction
 
-- readability is critical for verification
-- baseline must be correct before optimization
-- easier to validate step-by-step improvements
+The long-term value of the project is not only in the algorithms themselves, but in the engineering workflow around them:
 
-This is a deliberate **engineering-first strategy**.
+- define a clear DSP kernel
+- validate numerically
+- benchmark on real toolchains
+- document the result
+- prepare the algorithm for downstream hardware or embedded work

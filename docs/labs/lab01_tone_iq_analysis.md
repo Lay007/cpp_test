@@ -75,7 +75,7 @@ data/lab01_tone_ci16.iq
 ```bash
 cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
-./build/my_project/iq_analysis_demo data/lab01_tone_ci16.iq 1024000 100000
+./build/dsp_core/iq_analysis_demo data/lab01_tone_ci16.iq 1024000 100000
 ```
 
 Arguments:

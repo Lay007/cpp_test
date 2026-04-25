@@ -1,59 +1,42 @@
-# SIMD acceleration notes
+# SIMD Notes
 
-## Goal
+SIMD acceleration is intentionally optional.
+The default build stays portable, while x86-64 systems with AVX2/FMA can enable faster kernels when that trade-off is acceptable.
 
-The SIMD backend is intentionally optional and enabled with:
+## Enable AVX2
 
 ```bash
 cmake -S . -B build -DDSP_ENABLE_AVX2=ON -DCMAKE_BUILD_TYPE=Release
 ```
 
-This keeps the default build portable while allowing AVX2/FMA acceleration on suitable x86-64 CPUs.
+## Current SIMD posture
 
-## Accelerated kernels
-
-| Kernel | SIMD status | Reason |
+| Kernel | Status | Why |
 |---|---|---|
-| RMS | AVX2/FMA | independent multiply-add reduction |
-| FIR / convolution | AVX2/FMA candidate | sliding dot product structure |
-| Goertzel | scalar baseline | recursive dependency limits SIMD gain |
-| GCC-PHAT | future FFT/SIMD | transform dominates |
-| Resampler | future polyphase/SIMD | FIR branches can be vectorized |
+| RMS | accelerated | independent multiply-add reduction maps well to AVX2 |
+| Direct convolution | accelerated | sliding dot product benefits from vectorized MAC |
+| Goertzel batch | partially accelerated | batching multiple targets exposes useful data parallelism |
+| GCC-PHAT | not explicitly SIMD tuned | transform structure dominates optimization choices |
+| Resampler | baseline only | polyphase restructuring is the next meaningful step |
 
-## Why RMS is easy to vectorize
+## What makes a kernel SIMD-friendly
 
-RMS computes a sum of squares:
+SIMD works best when adjacent samples can be processed independently.
+For example, RMS is simply:
 
 ```text
 sum += x[n] * x[n]
 ```
 
-Each sample can be processed independently, which maps well to SIMD lanes.
+That pattern is naturally vectorizable.
 
-## Why Goertzel is not the first SIMD target
+## Why not every DSP kernel should be forced into SIMD first
 
-Goertzel has a recurrence:
+Some algorithms have recursive dependencies or benefit more from an algorithmic change than from lane-level acceleration.
+Goertzel is a good example: it has a stateful recurrence, so batching or problem reformulation may matter more than naive vectorization.
 
-```text
-s[n] = x[n] + c*s[n-1] - s[n-2]
-```
-
-Each output depends on previous state. That limits straightforward SIMD parallelism. It can still be optimized through multi-frequency batching or block-level parallelism, but it is not the simplest first SIMD kernel.
-
-## FIR direction
-
-Direct FIR can be implemented as a sliding dot product:
+The rule here is pragmatic:
 
 ```text
-y[n] = dot(x_window, h_reversed)
-```
-
-This maps naturally to AVX2/FMA. For long filters, FFT-based convolution may still outperform direct SIMD FIR.
-
-## Engineering rule
-
-Use the simplest correct implementation first. Then optimize hot paths with measurable bottlenecks.
-
-```text
-scalar reference → SIMD direct kernel → FFT / polyphase / FPGA
+algorithmic win first, instruction-level win second
 ```

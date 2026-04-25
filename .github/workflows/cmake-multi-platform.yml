@@ -1,64 +1,53 @@
-name: C++ CI
+name: CMake CI
 
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - "docs/assets/*.png"
-      - "docs/assets/*.svg"
-      - "docs/benchmark.md"
   pull_request:
     branches: ["main"]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  build-test:
-    runs-on: ubuntu-latest
+  build-and-test:
+    name: ${{ matrix.os }} / ${{ matrix.avx2 && 'avx2' || 'baseline' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            avx2: true
+          - os: windows-latest
+            avx2: true
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
-      - name: Install Python deps
-        run: pip install numpy matplotlib
 
       - name: Configure
-        run: cmake -S . -B build -DBUILD_TESTING=ON -DDSP_ENABLE_AVX2=ON -DCMAKE_BUILD_TYPE=Release
+        run: >
+          cmake -S . -B build
+          -DBUILD_TESTING=ON
+          -DDSP_BUILD_DEMOS=ON
+          -DDSP_BUILD_BENCHMARKS=ON
+          -DDSP_ENABLE_AVX2=${{ matrix.avx2 && 'ON' || 'OFF' }}
+          -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build build --config Release --parallel
 
-      - name: Tests
-        run: ctest --test-dir build --output-on-failure
+      - name: Test
+        run: ctest --test-dir build --build-config Release --output-on-failure
 
-      - name: Benchmark
-        run: cmake --build build --target benchmark_report
+      - name: Generate benchmark report
+        if: runner.os == 'Linux'
+        run: cmake --build build --config Release --target benchmark_report
 
-      - name: Generate DSP SVG artifacts
-        run: python tools/generate_dsp_svg_artifacts.py
-
-      - name: Generate benchmark plot
-        run: python tools/generate_benchmark_plot.py
-
-      - name: Commit updated artifacts
-        if: github.event_name == 'push'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/assets/*.png docs/assets/*.svg docs/benchmark.md || true
-          if git diff --cached --quiet; then
-            echo "No generated artifact changes"
-          else
-            git commit -m "Auto-update DSP benchmark artifacts [skip ci]"
-            git push
-          fi
+      - name: Upload benchmark artifact
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-report
+          path: build/reports/dsp_performance.md

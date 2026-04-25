@@ -1,4 +1,4 @@
-#include "my_project/dsp.hpp"
+#include "dsp_core/dsp.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -12,7 +12,7 @@
 #include <immintrin.h>
 #endif
 
-namespace my_project::dsp {
+namespace dsp_core::dsp {
 namespace {
 constexpr double kPi = 3.14159265358979323846;
 using Complex = std::complex<double>;
@@ -27,6 +27,15 @@ std::size_t next_power_of_two(std::size_t value) {
     std::size_t result = 1;
     while (result < value) result <<= 1U;
     return result;
+}
+
+void validate_frequency(double sample_rate_hz, double frequency_hz, const char* name) {
+    if (sample_rate_hz <= 0.0) {
+        throw std::invalid_argument("Sample rate must be > 0.");
+    }
+    if (frequency_hz < 0.0 || frequency_hz >= sample_rate_hz / 2.0) {
+        throw std::invalid_argument(std::string(name) + " must be in range [0.0, Nyquist).");
+    }
 }
 
 void fft_inplace(std::vector<Complex>& a, bool inverse) {
@@ -54,26 +63,6 @@ void fft_inplace(std::vector<Complex>& a, bool inverse) {
     if (inverse) {
         for (auto& v : a) v /= static_cast<double>(n);
     }
-}
-
-std::vector<Complex> dft(std::vector<Complex> input, bool inverse) {
-    if ((input.size() & (input.size() - 1U)) == 0U) {
-        fft_inplace(input, inverse);
-        return input;
-    }
-    const std::size_t n = input.size();
-    std::vector<Complex> output(n, Complex(0.0, 0.0));
-    const double direction = inverse ? 1.0 : -1.0;
-    const double scale = inverse ? 1.0 / static_cast<double>(n) : 1.0;
-    for (std::size_t k = 0; k < n; ++k) {
-        Complex sum(0.0, 0.0);
-        for (std::size_t t = 0; t < n; ++t) {
-            const double angle = direction * 2.0 * kPi * static_cast<double>(k * t) / static_cast<double>(n);
-            sum += input[t] * Complex(std::cos(angle), std::sin(angle));
-        }
-        output[k] = sum * scale;
-    }
-    return output;
 }
 
 #ifdef MY_PROJECT_DSP_ENABLE_AVX2
@@ -106,7 +95,8 @@ Signal convolve(const Signal& signal, const Signal& kernel) {
         const std::size_t start = (i < m - 1U) ? 0U : i - (m - 1U);
         const std::size_t end = std::min(i, n - 1U);
         const std::size_t len = end - start + 1U;
-        out[i] = dot_product_avx2(&signal[start], &kernel_rev[m - len], len);
+        const std::size_t kernel_offset = (m - 1U) - i + start;
+        out[i] = dot_product_avx2(&signal[start], &kernel_rev[kernel_offset], len);
     }
 #else
     for (std::size_t i = 0; i < n; ++i) {
@@ -162,7 +152,7 @@ Signal convolve_fft_overlap_save(const Signal& signal, const Signal& kernel, std
 }
 
 Signal generate_tone(std::size_t samples, double sample_rate_hz, double frequency_hz, double amplitude, double phase_rad) {
-    if (sample_rate_hz <= 0.0 || frequency_hz <= 0.0 || frequency_hz >= sample_rate_hz / 2.0) throw std::invalid_argument("Invalid sample rate or tone frequency.");
+    validate_frequency(sample_rate_hz, frequency_hz, "Tone frequency");
     Signal out(samples, 0.0);
     const double omega = 2.0 * kPi * frequency_hz / sample_rate_hz;
     for (std::size_t n = 0; n < samples; ++n) out[n] = amplitude * std::sin(omega * static_cast<double>(n) + phase_rad);
@@ -218,7 +208,7 @@ double frequency_response_magnitude(const std::vector<double>& taps, double norm
 
 double goertzel_power(const Signal& signal, double sample_rate_hz, double target_hz) {
     if (signal.empty()) throw std::invalid_argument("Signal is empty.");
-    if (sample_rate_hz <= 0.0 || target_hz <= 0.0 || target_hz >= sample_rate_hz / 2.0) throw std::invalid_argument("Invalid sample rate or target frequency.");
+    validate_frequency(sample_rate_hz, target_hz, "Target frequency");
     const std::size_t n = signal.size();
     const std::size_t k_bin = static_cast<std::size_t>(std::llround(static_cast<double>(n) * target_hz / sample_rate_hz));
     const double omega = 2.0 * kPi * static_cast<double>(k_bin) / static_cast<double>(n);
@@ -233,6 +223,13 @@ double goertzel_power(const Signal& signal, double sample_rate_hz, double target
 }
 
 std::vector<double> goertzel_power_batch(const Signal& signal, double sample_rate_hz, const std::vector<double>& target_hz) {
+    if (signal.empty()) throw std::invalid_argument("Signal is empty.");
+    if (sample_rate_hz <= 0.0) throw std::invalid_argument("Sample rate must be > 0.");
+
+    for (double frequency_hz : target_hz) {
+        validate_frequency(sample_rate_hz, frequency_hz, "Target frequency");
+    }
+
     std::vector<double> out(target_hz.size(), 0.0);
 #ifdef MY_PROJECT_DSP_ENABLE_AVX2
     std::size_t k = 0;
@@ -296,6 +293,8 @@ GccPhatResult estimate_delay_gcc_phat(const Signal& reference, const Signal& del
 Signal resample_rational(const Signal& input, int up_factor, int down_factor, int filter_taps, double cutoff_scale) {
     if (input.empty()) return {};
     if (up_factor <= 0 || down_factor <= 0) throw std::invalid_argument("Resampling factors must be > 0.");
+    if (filter_taps < 7 || filter_taps % 2 == 0) throw std::invalid_argument("Filter taps must be odd and >= 7.");
+    if (cutoff_scale <= 0.0 || cutoff_scale > 1.0) throw std::invalid_argument("cutoff_scale must be in range (0.0, 1.0].");
     const double cutoff = 0.5 / static_cast<double>(std::max(up_factor, down_factor)) * cutoff_scale;
     auto anti_alias = design_lowpass_fir(filter_taps, cutoff);
     for (double& tap : anti_alias) tap *= static_cast<double>(up_factor);
@@ -313,4 +312,4 @@ Signal resample_rational(const Signal& input, int up_factor, int down_factor, in
     }
     return output;
 }
-}  // namespace my_project::dsp
+}  // namespace dsp_core::dsp
