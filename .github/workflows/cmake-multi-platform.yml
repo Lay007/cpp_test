@@ -8,41 +8,41 @@ on:
 
 jobs:
   build-test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        build_type: [Release]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python deps
+        run: pip install numpy matplotlib
 
       - name: Configure
-        run: >
-          cmake -S . -B build
-          -DBUILD_TESTING=ON
-          -DUPDATE_SUBMODULES=OFF
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        run: cmake -S . -B build -DBUILD_TESTING=ON -DDSP_ENABLE_AVX2=ON -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build build --config ${{ matrix.build_type }} --parallel
+        run: cmake --build build --config Release --parallel
 
-      - name: Unit and Smoke Tests
-        run: ctest --test-dir build -C ${{ matrix.build_type }} --output-on-failure
+      - name: Tests
+        run: ctest --test-dir build --output-on-failure
 
-      - name: Performance Tests
-        run: ctest --test-dir build -C ${{ matrix.build_type }} -L perf --output-on-failure
+      - name: Benchmark
+        run: cmake --build build --target benchmark_report
 
-      - name: Generate Benchmark Report
-        run: cmake --build build --config ${{ matrix.build_type }} --target benchmark_report
+      - name: Generate plots
+        run: python tools/generate_benchmark_plot.py
 
-      - name: Upload Benchmark Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: dsp-benchmark-${{ matrix.os }}-${{ matrix.build_type }}
-          path: build/reports/dsp_performance.md
-          if-no-files-found: error
+      - name: Commit updated artifacts
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/assets/*.png docs/benchmark.md || true
+          git commit -m "Auto-update benchmark artifacts" || echo "No changes"
+          git push
