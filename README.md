@@ -9,6 +9,23 @@ A compact but serious **C++ DSP showcase** focused on practical signal-processin
 
 ---
 
+## 🎓 Part of SDR course ecosystem
+
+This repository is integrated with:
+
+👉 https://github.com/Lay007/zynq-sdr-course
+
+It acts as a **C++ DSP backend layer** bridging:
+
+- theory (DSP fundamentals)
+- modeling (MATLAB / Simulink)
+- software (C++)
+- hardware (FPGA / SDR)
+
+Detailed integration: `docs/course_bridge.md`
+
+---
+
 ## DSP modules overview
 
 ![DSP flow](docs/assets/dsp_modules_flow.svg)
@@ -47,21 +64,6 @@ A compact but serious **C++ DSP showcase** focused on practical signal-processin
 
 This repository intentionally prioritizes **clarity and correctness over premature optimization**.
 
-Key design choices:
-
-- **Readable DSP kernels** instead of opaque optimized code
-- **Naive DFT baseline for GCC-PHAT** to make algorithm structure explicit
-- **Time-domain FIR** as a reference implementation before FFT acceleration
-- **Strict test coverage** before performance tuning
-- **Separation of concerns**: DSP / tests / benchmarks / reports
-
-Trade-offs:
-
-- Lower raw performance in exchange for transparency
-- Explicit optimization roadmap (SIMD, FFT, fixed-point)
-
-This makes the project ideal as a **portfolio artifact and engineering discussion base**.
-
 ---
 
 ## Highlights
@@ -69,8 +71,7 @@ This makes the project ideal as a **portfolio artifact and engineering discussio
 - modern **C++17** codebase
 - **CMake + CTest + GoogleTest** workflow
 - CI on **Linux** and **Windows**
-- correctness-first implementation with clear optimization headroom
-- benchmark reporting for performance-oriented iteration
+- correctness-first implementation
 
 ---
 
