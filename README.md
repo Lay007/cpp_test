@@ -9,43 +9,15 @@
 
 ## 🚀 DSP engineering showcase + SDR course backend
 
-This repository is not just a collection of DSP algorithms.
-
-It is a **complete engineering pipeline**:
-
 ```text
 Signal → SDR → IQ → C++ DSP → analysis → benchmark → FPGA candidate
 ```
 
-It is tightly integrated with:
-
-👉 https://github.com/Lay007/zynq-sdr-course
-
 ---
 
-## 🧠 What this project demonstrates
+## 📚 Lab track
 
-- DSP fundamentals in real code
-- algorithm trade-offs and complexity
-- reproducible testing
-- performance awareness
-- SDR signal processing workflow
-- FPGA-ready thinking
-
----
-
-## 📚 Lab track (core of the project)
-
-👉 See full list: `docs/labs/README.md`
-
-| Lab | Topic |
-|---|---|
-| Lab 01 | IQ → C++ analysis |
-| Lab 02 | FFT vs Goertzel |
-| Lab 03 | GCC-PHAT |
-| Lab 04 | FIR (time vs FFT) |
-| Lab 05 | Resampling (polyphase) |
-| Lab 06 | Real SDR signal |
+See: `docs/labs/README.md`
 
 ---
 
@@ -57,56 +29,31 @@ It is tightly integrated with:
 
 ## 📊 Visual DSP artifacts
 
-| FIR | Goertzel | GCC |
-|-----|----------|-----|
-| ![](docs/assets/fir_response.png) | ![](docs/assets/goertzel_detection.png) | ![](docs/assets/gcc_phat_delay.png) |
+### FIR response
+![FIR](docs/assets/fir_response.png)
+
+### Goertzel detection
+![Goertzel](docs/assets/goertzel_detection.png)
+
+### GCC-PHAT delay
+![GCC](docs/assets/gcc_phat_delay.png)
 
 ---
 
-## ⚙️ Engineering decisions
+## 📊 Performance dashboard
 
-- correctness-first implementation
-- readable DSP kernels
-- naive baselines → optimization roadmap
-- explicit trade-offs instead of hidden complexity
+![Benchmark](docs/assets/benchmark_dashboard.svg)
 
----
-
-## 📈 Algorithm overview
-
-| Algorithm | Complexity | Target optimization |
-|---|---|---|
-| FIR | O(N·M) | SIMD / FFT |
-| Goertzel | O(N) | vectorization |
-| GCC-PHAT | O(N²) → O(N log N) | FFT |
-| Resampler | O(N·M) | polyphase |
+👉 Full report: `docs/benchmark.md`
 
 ---
 
 ## 🚀 Quick start
 
 ```bash
-cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
-cmake --build build --config Release
-ctest --test-dir build --output-on-failure
-```
-
----
-
-## 🧪 Generate DSP visuals
-
-```bash
-pip install numpy matplotlib
-python tools/generate_dsp_plots.py
-```
-
----
-
-## 📡 SDR workflow example
-
-```bash
-python tools/generate_lab06_ci16_tone.py
-./build/my_project/iq_analysis_demo data/lab06_simulated_ci16.iq 1024000 100000
+cmake -S . -B build -DDSP_ENABLE_AVX2=ON -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+cmake --build build --target benchmark_report
 ```
 
 ---
@@ -115,8 +62,8 @@ python tools/generate_lab06_ci16_tone.py
 
 - SIMD / AVX optimization
 - FFT-based acceleration
-- real SDR streaming
-- FPGA mapping (Zynq)
+- SDR streaming
+- FPGA mapping
 
 ---
 
