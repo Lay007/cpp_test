@@ -30,13 +30,13 @@ See: `docs/labs/README.md`
 ## 📊 Visual DSP artifacts
 
 ### FIR response
-![FIR](docs/assets/fir_response.png)
+![FIR](docs/assets/fir_response.svg)
 
 ### Goertzel detection
-![Goertzel](docs/assets/goertzel_detection.png)
+![Goertzel](docs/assets/goertzel_detection.svg)
 
 ### GCC-PHAT delay
-![GCC](docs/assets/gcc_phat_delay.png)
+![GCC](docs/assets/gcc_phat_delay.svg)
 
 ---
 
