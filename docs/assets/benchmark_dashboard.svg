@@ -1,27 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
 <title id="title">DSP benchmark dashboard</title>
 <desc id="desc">Illustrative benchmark dashboard comparing scalar, SIMD and FFT DSP kernels.</desc>
 <style>
-.bg{fill:#f8fafc}.title{font:700 32px Arial;fill:#0f172a}.sub{font:400 16px Arial;fill:#475569}.card{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:18}.h{font:700 18px Arial;fill:#0f172a}.t{font:400 14px Arial;fill:#475569}.bar1{fill:#94a3b8}.bar2{fill:#60a5fa}.bar3{fill:#22c55e}.axis{stroke:#334155;stroke-width:2}.grid{stroke:#e2e8f0;stroke-width:1}.label{font:700 14px Arial;fill:#0f172a}.small{font:400 12px Arial;fill:#64748b}
+.bg{fill:#f8fafc}.title{font:700 32px Arial;fill:#0f172a}.sub{font:400 16px Arial;fill:#475569}.card{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:18}.legend{fill:#fff;stroke:#cbd5e1;stroke-width:1.7;rx:14}.h{font:700 18px Arial;fill:#0f172a}.t{font:400 14px Arial;fill:#475569}.bar1{fill:#94a3b8}.bar2{fill:#60a5fa}.bar3{fill:#22c55e}.axis{stroke:#334155;stroke-width:2}.grid{stroke:#e2e8f0;stroke-width:1}.label{font:700 14px Arial;fill:#0f172a}.small{font:400 12px Arial;fill:#64748b}.legendTitle{font:700 14px Arial;fill:#0f172a}
 </style>
-<rect class="bg" width="1200" height="520"/>
+<rect class="bg" width="1200" height="560"/>
 <text x="60" y="60" class="title">DSP Benchmark Dashboard</text>
 <text x="60" y="88" class="sub">Scalar baseline vs AVX2 SIMD vs FFT-oriented acceleration</text>
-<rect x="60" y="125" width="1080" height="330" class="card"/>
-<line x1="160" y1="390" x2="1080" y2="390" class="axis"/>
-<line x1="160" y1="180" x2="160" y2="390" class="axis"/>
-<line x1="160" y1="320" x2="1080" y2="320" class="grid"/>
-<line x1="160" y1="250" x2="1080" y2="250" class="grid"/>
-<text x="180" y="155" class="h">Relative speedup, illustrative scale</text>
-<text x="105" y="394" class="small">1x</text><text x="105" y="324" class="small">5x</text><text x="98" y="254" class="small">10x</text>
-<text x="210" y="420" class="label">FIR</text><text x="450" y="420" class="label">Goertzel</text><text x="690" y="420" class="label">RMS</text><text x="900" y="420" class="label">GCC-PHAT</text>
-<rect x="200" y="360" width="40" height="30" class="bar1"/><rect x="250" y="250" width="40" height="140" class="bar2"/><rect x="300" y="210" width="40" height="180" class="bar3"/>
-<rect x="440" y="360" width="40" height="30" class="bar1"/><rect x="490" y="285" width="40" height="105" class="bar2"/>
-<rect x="680" y="360" width="40" height="30" class="bar1"/><rect x="730" y="240" width="40" height="150" class="bar2"/>
-<rect x="910" y="360" width="40" height="30" class="bar1"/><rect x="960" y="230" width="40" height="160" class="bar3"/>
-<rect x="790" y="145" width="300" height="92" class="card"/>
-<rect x="815" y="170" width="18" height="18" class="bar1"/><text x="845" y="184" class="t">Scalar reference</text>
-<rect x="815" y="198" width="18" height="18" class="bar2"/><text x="845" y="212" class="t">AVX2 / FMA</text>
-<rect x="815" y="226" width="18" height="18" class="bar3"/><text x="845" y="240" class="t">FFT / algorithmic acceleration</text>
-<text x="60" y="490" class="small">Actual values depend on CPU, compiler, build type and input sizes. Generate local report with benchmark_report target.</text>
+<rect x="60" y="125" width="1080" height="370" class="card"/>
+
+<!-- Plot area: 120..820, legend area: 860..1110 -->
+<text x="135" y="160" class="h">Relative speedup, illustrative scale</text>
+<line x1="150" y1="405" x2="820" y2="405" class="axis"/>
+<line x1="150" y1="190" x2="150" y2="405" class="axis"/>
+<line x1="150" y1="348" x2="820" y2="348" class="grid"/>
+<line x1="150" y1="292" x2="820" y2="292" class="grid"/>
+<line x1="150" y1="236" x2="820" y2="236" class="grid"/>
+<text x="102" y="409" class="small">1x</text>
+<text x="102" y="352" class="small">5x</text>
+<text x="95" y="296" class="small">10x</text>
+<text x="95" y="240" class="small">15x</text>
+
+<!-- FIR -->
+<text x="205" y="435" class="label">FIR</text>
+<rect x="185" y="370" width="32" height="35" class="bar1"/>
+<rect x="225" y="292" width="32" height="113" class="bar2"/>
+<rect x="265" y="250" width="32" height="155" class="bar3"/>
+
+<!-- Goertzel -->
+<text x="365" y="435" class="label">Goertzel</text>
+<rect x="365" y="370" width="32" height="35" class="bar1"/>
+<rect x="405" y="316" width="32" height="89" class="bar2"/>
+
+<!-- RMS -->
+<text x="545" y="435" class="label">RMS</text>
+<rect x="535" y="370" width="32" height="35" class="bar1"/>
+<rect x="575" y="280" width="32" height="125" class="bar2"/>
+
+<!-- GCC-PHAT -->
+<text x="695" y="435" class="label">GCC-PHAT</text>
+<rect x="700" y="370" width="32" height="35" class="bar1"/>
+<rect x="740" y="238" width="32" height="167" class="bar3"/>
+
+<!-- Dedicated legend column -->
+<rect x="860" y="172" width="240" height="150" class="legend"/>
+<text x="885" y="202" class="legendTitle">Legend</text>
+<rect x="885" y="222" width="18" height="18" class="bar1"/>
+<text x="915" y="237" class="t">Scalar reference</text>
+<rect x="885" y="252" width="18" height="18" class="bar2"/>
+<text x="915" y="267" class="t">AVX2 / FMA</text>
+<rect x="885" y="282" width="18" height="18" class="bar3"/>
+<text x="915" y="297" class="t">FFT acceleration</text>
+
+<text x="60" y="530" class="small">Actual values depend on CPU, compiler, build type and input sizes. Generate a local report with the benchmark_report target.</text>
 </svg>
