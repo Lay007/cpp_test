@@ -102,6 +102,18 @@ dsp_core/dsp.hpp
 
 ![DSP flow](docs/assets/dsp_modules_flow.svg)
 
+### FIR response
+
+![FIR response](docs/assets/fir_response.svg)
+
+### Goertzel detection
+
+![Goertzel detection](docs/assets/goertzel_detection.svg)
+
+### GCC-PHAT delay
+
+![GCC-PHAT delay](docs/assets/gcc_phat_delay.svg)
+
 ### Benchmark dashboard
 
 ![Benchmark dashboard](docs/assets/benchmark_dashboard.svg)

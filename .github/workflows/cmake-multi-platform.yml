@@ -26,6 +26,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        if: runner.os == 'Linux'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python dependencies
+        if: runner.os == 'Linux'
+        run: python -m pip install numpy matplotlib
+
       - name: Configure
         run: >
           cmake -S . -B build
@@ -45,9 +55,23 @@ jobs:
         if: runner.os == 'Linux'
         run: cmake --build build --config Release --target benchmark_report
 
-      - name: Upload benchmark artifact
+      - name: Generate DSP SVG artifacts
+        if: runner.os == 'Linux'
+        run: python tools/generate_dsp_svg_artifacts.py
+
+      - name: Generate benchmark dashboard assets
+        if: runner.os == 'Linux'
+        run: python tools/generate_benchmark_plot.py
+
+      - name: Upload generated DSP artifacts
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-report
-          path: build/reports/dsp_performance.md
+          name: dsp-generated-assets
+          path: |
+            build/reports/dsp_performance.md
+            docs/assets/fir_response.svg
+            docs/assets/goertzel_detection.svg
+            docs/assets/gcc_phat_delay.svg
+            docs/assets/benchmark_dashboard.svg
+            docs/assets/benchmark_results.png
