@@ -3,8 +3,15 @@ name: C++ CI
 on:
   push:
     branches: ["main"]
+    paths-ignore:
+      - "docs/assets/*.png"
+      - "docs/assets/*.svg"
+      - "docs/benchmark.md"
   pull_request:
     branches: ["main"]
+
+permissions:
+  contents: write
 
 jobs:
   build-test:
@@ -15,6 +22,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -36,13 +44,21 @@ jobs:
       - name: Benchmark
         run: cmake --build build --target benchmark_report
 
-      - name: Generate plots
+      - name: Generate DSP SVG artifacts
+        run: python tools/generate_dsp_svg_artifacts.py
+
+      - name: Generate benchmark plot
         run: python tools/generate_benchmark_plot.py
 
       - name: Commit updated artifacts
+        if: github.event_name == 'push'
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add docs/assets/*.png docs/benchmark.md || true
-          git commit -m "Auto-update benchmark artifacts" || echo "No changes"
-          git push
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/*.png docs/assets/*.svg docs/benchmark.md || true
+          if git diff --cached --quiet; then
+            echo "No generated artifact changes"
+          else
+            git commit -m "Auto-update DSP benchmark artifacts [skip ci]"
+            git push
+          fi
